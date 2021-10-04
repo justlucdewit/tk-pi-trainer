@@ -38,6 +38,14 @@ class GameState:
     		button.place(x = x_pos, y = y_pos)
     
     def handle_input(self, text):
+    	print(text)
+
+    	if (type(text) is tk.Event):
+    		text = text.char
+
+    	if (text not in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."]):
+    		return
+
     	if not self.lost:
 	        self.add_input(text)
 	        self.check_input()
@@ -81,9 +89,10 @@ class GameState:
     	self.update_text_score()
     	self.update_text_input()
 
-
 # Create the game state
 state = GameState()
+
+window.bind("<Key>", partial(state.handle_input))
 
 # Place the text inputs
 state.text_input.place(x = 30, y = 30)
