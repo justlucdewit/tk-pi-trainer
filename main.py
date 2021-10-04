@@ -10,18 +10,36 @@ usr_input = ""
 window = tk.Tk()
 window.geometry("200x250")
 
-# Add text
-text_input = tk.Label(text = usr_input)
-text_score = tk.Label(text = "score: 0")
 
-def input_num(text):
-	global score
-	global usr_input
+class GameState:
+    # Object for handling the game state and variables
+    def __init__(self) -> None:
+        self.score = 0
+        self.user_input = ''
+        self.text_input = tk.Label(text = usr_input)
+        self.text_score = tk.Label(text = "score: 0")
+    
+    def handle_input(self, text):
+        self.add_input(text)
+        self.check_input()
+        self.update_text_input()
 
-	score += 1
-	usr_input += text
-	text_score.config(text = "score: " + str(score))
-	text_input.config(text = usr_input)
+    def add_input(self, text):
+        self.user_input += text
+
+    def check_input(self):
+        if self.user_input.startswith(str(math.pi)):
+            print(self.user_input)
+        else:
+            print("Game over")
+
+    def update_text_input(self):
+        self.text_input.config(text=self.user_input)
+
+    def update_text_score(self):
+        pass
+
+state = GameState()
 
 
 # Todo: Add height and width properties to tk.Button()
@@ -29,7 +47,7 @@ def input_num(text):
 button_texts = "789456123,0"
 buttons = []
 for button_text in button_texts:
-	buttons.append(tk.Button(window, text=button_text, width=5, height=2, command=partial(input_num, button_text)))
+	buttons.append(tk.Button(window, text=button_text, width=5, height=2, command=partial(state.handle_input, button_text)))
 
 # Position the buttons
 for index, button in enumerate(buttons):
@@ -37,9 +55,11 @@ for index, button in enumerate(buttons):
 	x_pos = 30 + 50 * (index % 3)
 	button.place(x = x_pos, y = y_pos)
 
-text_input.place(x = 30, y = 30)
-text_score.place(x = 30, y = 10)
+state.text_input.place(x = 30, y = 30)
+state.text_score.place(x = 30, y = 10)
 
 # Set title
 window.title(title)
-window.mainloop()
+
+if __name__ == "__main__":
+    window.mainloop()
