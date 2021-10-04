@@ -1,36 +1,45 @@
+from functools import partial
 import tkinter as tk
+import math
 
-title = "Tk project"
+title = "PI Trainer"
+score = 0
+usr_input = ""
 
+# Create window
 window = tk.Tk()
+window.geometry("200x250")
+
+# Add text
+text_input = tk.Label(text = usr_input)
+text_score = tk.Label(text = "score: 0")
+
+def input_num(text):
+	global score
+	global usr_input
+
+	score += 1
+	usr_input += text
+	text_score.config(text = "score: " + str(score))
+	text_input.config(text = usr_input)
+
 
 # Todo: Add height and width properties to tk.Button()
-button_0 = tk.Button(window, text="0")
-button_1 = tk.Button(window, text="1")
-button_2 = tk.Button(window, text="2")
-button_3 = tk.Button(window, text="3")
-button_4 = tk.Button(window, text="4")
-button_5 = tk.Button(window, text="5")
-button_6 = tk.Button(window, text="6")
-button_7 = tk.Button(window, text="7")
-button_8 = tk.Button(window, text="8")
-button_9 = tk.Button(window, text="9")
-button_comma = tk.Button(window, text=",")
+# Display buttons
+button_texts = "789456123,0"
+buttons = []
+for button_text in button_texts:
+	buttons.append(tk.Button(window, text=button_text, width=5, height=2, command=partial(input_num, button_text)))
 
-button_7.place(x=50, y=20)
-button_8.place(x=70, y=20)
-button_9.place(x=90, y=20)
+# Position the buttons
+for index, button in enumerate(buttons):
+	y_pos = 50 + 50 * (index // 3)
+	x_pos = 30 + 50 * (index % 3)
+	button.place(x = x_pos, y = y_pos)
 
-button_4.place(x=50, y=50)
-button_5.place(x=70, y=50)
-button_6.place(x=90, y=50)
+text_input.place(x = 30, y = 30)
+text_score.place(x = 30, y = 10)
 
-button_1.place(x=50, y=80)
-button_2.place(x=70, y=80)
-button_3.place(x=90, y=80)
-
-button_0.place(x=70, y=110)
-button_comma.place(x=90, y=110)
-
+# Set title
 window.title(title)
 window.mainloop()
