@@ -2,6 +2,9 @@ from functools import partial
 import tkinter as tk
 import math
 
+with open("pi.txt") as file:
+    pi = file.readline()
+
 title = "PI"
 score = 0
 usr_input = ""
@@ -33,7 +36,7 @@ class GameState:
         self.score += 1
 
     def check_input(self):
-        if not str(math.pi).startswith(self.user_input):
+        if not pi.startswith(self.user_input):
             print("Game over")
             self.score -= 1
             self.lost = True
