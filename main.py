@@ -1,57 +1,74 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 from functools import partial
 import tkinter as tk
+import platform
 import math
 
-with open("pi.txt") as file:
+system = platform.system().lower()
+
+with open('pi.txt') as file:
     pi = file.readline()
 
-title = "PI"
+title = 'PI'
 score = 0
-usr_input = ""
+usr_input = ''
 
 # Create window
+
 window = tk.Tk()
-window.geometry("200x250")
+window.geometry('200x250')
 window.resizable(False, False)
 
+
 class GameState:
+
     # Object for handling the game state and variables
-    def __init__(self) -> None:
+
+    def __init__(self, os_name):
         self.score = 0
         self.lost = False
         self.user_input = ''
-        self.text_input = tk.Label(text = usr_input)
-        self.text_score = tk.Label(text = "score: 0")
+        self.system = os_name
+        self.text_input = tk.Label(text=usr_input)
+        self.text_score = tk.Label(text='score: 0')
         self.buttons = []
         self.create_buttons()
-        self.retry_button = tk.Button(window, text="Retry", width=10, height=2, command=self.retry)
+        self.retry_button = tk.Button(window, text='Retry', width=10,
+                height=2, command=self.retry)
 
     def create_buttons(self):
-    	self.buttons = []
-    	for button_text in "789456123.0":
-    		self.buttons.append(tk.Button(window, text=button_text, width=5, height=2, command=partial(self.handle_input, button_text)))
+        self.buttons = []
+        for button_text in '789456123.0':
+            self.buttons.append(tk.Button(window, text=button_text,
+                                width=5, height=2,
+                                command=partial(self.handle_input,
+                                button_text)))
 
-    	# Position the buttons
-    	for index, button in enumerate(self.buttons):
-    		y_pos = 50 + 50 * (index // 3)
-    		x_pos = 30 + 50 * (index % 3)
-    		button.place(x = x_pos, y = y_pos)
-    
+        # Position the buttons
+
+        for (index, button) in enumerate(self.buttons):
+            y_pos = 50 + 50 * (index // 3)
+            x_pos = 30 + 50 * (index % 3)
+            button.place(x=x_pos, y=y_pos)
+
     def handle_input(self, text):
-    	print(text)
+        if type(text) is tk.Event:
+            text = text.char
 
-    	if (type(text) is tk.Event):
-    		text = text.char
+        if text not in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '\r', '\n']:
+            return
 
-    	if (text not in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."]):
-    		return
+        if text in ['\r', '\n']:
+            if self.lost:
+                self.retry()
+        elif not self.lost:
 
-    	if not self.lost:
-	        self.add_input(text)
-	        self.check_input()
-	        if not self.lost:
-		        self.update_text_input()
-		        self.update_text_score()
+            self.add_input(text)
+            self.check_input()
+            if not self.lost:
+                self.update_text_input()
+                self.update_text_score()
 
     def add_input(self, text):
         self.user_input += text
@@ -67,39 +84,44 @@ class GameState:
         self.text_input.config(text=self.user_input)
 
     def update_text_score(self):
-       	self.text_score.config(text="score: " + str(self.score))
+        self.text_score.config(text='score: ' + str(self.score))
 
     def game_over(self):
-    	self.text_input.config(text="GAME OVER")
+        self.text_input.config(text='GAME OVER')
 
-    	for button in self.buttons:
-    		button.destroy()
+        for button in self.buttons:
+            button.destroy()
 
-    	self.retry_button.place(x = 60, y = 60)
+        self.retry_button.place(x=60, y=60)
 
     def retry(self):
-    	self.retry_button.destroy()
-    	self.retry_button = tk.Button(window, text="Retry", width=10, height=2, command=self.retry)
+        self.retry_button.destroy()
+        self.retry_button = tk.Button(window, text='Retry', width=10,
+                height=2, command=self.retry)
 
-    	self.create_buttons()
+        self.create_buttons()
 
-    	self.score = 0
-    	self.lost = False
-    	self.user_input = ''
-    	self.update_text_score()
-    	self.update_text_input()
+        self.score = 0
+        self.lost = False
+        self.user_input = ''
+        self.update_text_score()
+        self.update_text_input()
+
 
 # Create the game state
-state = GameState()
 
-window.bind("<Key>", partial(state.handle_input))
+state = GameState(system)
+
+window.bind('<Key>', partial(state.handle_input))
 
 # Place the text inputs
-state.text_input.place(x = 30, y = 30)
-state.text_score.place(x = 30, y = 10)
+
+state.text_input.place(x=30, y=30)
+state.text_score.place(x=30, y=10)
 
 # Set title
+
 window.title(title)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     window.mainloop()
