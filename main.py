@@ -4,6 +4,8 @@ from functools import partial
 import tkinter as tk
 import platform
 import math
+import csv
+import time
 
 system = platform.system().lower()
 
@@ -87,6 +89,11 @@ class GameState:
         self.text_score.config(text='score: ' + str(self.score))
 
     def game_over(self):
+        with open('scores.csv', 'a', newline='') as csvfile:
+            fieldnames = ['unix_time', 'score']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writerow({'unix_time': int(time.time()), 'score': self.score})
+
         self.text_input.config(text='GAME OVER')
 
         for button in self.buttons:
